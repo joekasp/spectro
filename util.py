@@ -47,7 +47,7 @@ def matchDims(main,obj_list):
     for i in range(len(dims)):
         idim = len(obj_list[i])
         if(idim < dims[i]):
-            t_main = np.delete(t_main,[idim:],i)
+            t_main = np.delete(t_main,np.s_[idim:],i)
             t_obj_list.append(obj_list[i])
         else:
             t_obj_list.append(obj_list[i][:dims[i]])
