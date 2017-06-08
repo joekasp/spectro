@@ -2,6 +2,10 @@ import math
 import numpy as np
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
+
+from fits import *
+
 
 def doPCA(data,w1,w3,tau2,n_comp=10):
     data_r = np.zeros((data.shape[2],data.shape[0]*data.shape[1]))
@@ -54,3 +58,8 @@ def doPCA(data,w1,w3,tau2,n_comp=10):
     plt.ylabel('Component contribution')
     plt.legend(loc='upper right')
     plt.show()
+
+    #print(tau2.shape)
+    p0 = .1,.1,.1 
+    popt, pcov = curve_fit(my_exponential,tau2.ravel(),data_c[:,0],p0,maxfev=1000)
+    print(popt) 
