@@ -1,6 +1,6 @@
 import math
 import numpy as np
-from sklearn.decomposition import PCA
+from sklearn.decomposition import FastICA
 from sklearn.preprocessing import normalize
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
@@ -8,7 +8,7 @@ from scipy.optimize import curve_fit
 from fits import *
 from plot3d import *
 
-def doPCA(data,w1,w3,tau2,n_comp=10):
+def doICA(data,w1,w3,tau2,n_comp=10):
     data_r = np.zeros((data.shape[2],data.shape[0]*data.shape[1]))
     for i in range(data.shape[2]):
         data_r[i] = np.nan_to_num(data[:,:,i]).ravel()
@@ -17,11 +17,11 @@ def doPCA(data,w1,w3,tau2,n_comp=10):
 #    data_r = (data_r - np.mean(data_r,axis=0))/np.std(data_r,ddof=1,axis=0)
 #    data_r = normalize(data_r,norm='l2',axis=0)
 
-    pca = PCA(n_components=n_comp)
-    pca.fit(data_r)
-    comp = np.zeros((data.shape[0],data.shape[1],pca.components_.shape[0]))
-    for i in range(pca.components_.shape[0]):
-        comp[:,:,i] = pca.components_[i].reshape(data.shape[0],data.shape[1])
+    ica = FastICA(n_components=n_comp,whiten=True)
+    ica.fit(data_r)
+    comp = np.zeros((data.shape[0],data.shape[1],ica.components_.shape[0]))
+    for i in range(ica.components_.shape[0]):
+        comp[:,:,i] = ica.components_[i].reshape(data.shape[0],data.shape[1])
 
     # Plot a series of components
     w1grid, w3grid = np.meshgrid(w3, w1)
@@ -43,7 +43,7 @@ def doPCA(data,w1,w3,tau2,n_comp=10):
     surf3d(w1,w3,comp[:,:,1])
     surf3d(w1,w3,comp[:,:,2])
 
-    data_c = pca.transform(data_r)
+    data_c = ica.transform(data_r)
 
     # Plot filtered contours
     w1grid, w3grid = np.meshgrid(w3, w1)

@@ -1,5 +1,7 @@
 from util import *
 from pca import *
+from ica import *
+from plot3d import *
 import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
@@ -18,8 +20,10 @@ if __name__ == '__main__':
     w3 = vec_list[1]
     tau2 = vec_list[2]
 
-    doPCA(data,w1,w3,tau2)
-    
+    doICA(data,w1,w3,tau2)
+#    doPCA(data,w1,w3,tau2)
+#    surf3d(w1,w3,data[:,:,1])
+        
 #    # create the plot
 #    X,Y = np.meshgrid(w3,w1)
 #    levels = np.linspace(-1,1,25)
