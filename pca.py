@@ -39,9 +39,10 @@ def doPCA(data,w1,w3,tau2,n_comp=10):
     plt.show()
 
     #create surface plots
-    surf3d(w1,w3,comp[:,:,0])
-    surf3d(w1,w3,comp[:,:,1])
-    surf3d(w1,w3,comp[:,:,2])
+#   ax1 = surf3d(w1,w3,comp[:,:,0])
+#   ax2 = surf3d(w1,w3,comp[:,:,1])
+#   ax3 = surf3d(w1,w3,comp[:,:,2])
+    plt.show()
 
     data_c = pca.transform(data_r)
 

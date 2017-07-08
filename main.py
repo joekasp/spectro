@@ -6,10 +6,10 @@ from plot3d import *
 import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
-    W1_NAME = '2D-IR-Data_SNP_NO_Brookes_JPCB_2013/EtOH/w1.mat'
-    W3_NAME = '2D-IR-Data_SNP_NO_Brookes_JPCB_2013/EtOH/w3_corrected_EtOH.mat'
-    TAU2_NAME = '2D-IR-Data_SNP_NO_Brookes_JPCB_2013/EtOH/Tau_2_EtOH.mat'
-    DATA_ARRAY_NAME = '2D-IR-Data_SNP_NO_Brookes_JPCB_2013/EtOH/Matexp_EtOH.mat'
+    W1_NAME = '2D-IR-Data_SNP_NO_Brookes_JPCB_2013/DMSO/w1.mat'
+    W3_NAME = '2D-IR-Data_SNP_NO_Brookes_JPCB_2013/DMSO/w3_corrected_DMSO.mat'
+    TAU2_NAME = '2D-IR-Data_SNP_NO_Brookes_JPCB_2013/DMSO/Tau_2_DMSO.mat'
+    DATA_ARRAY_NAME = '2D-IR-Data_SNP_NO_Brookes_JPCB_2013/DMSO/Matexp_DMSO.mat'
 
     xw1 = loadData(W1_NAME)
     xw3 = loadData(W3_NAME)
