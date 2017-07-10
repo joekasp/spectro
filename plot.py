@@ -91,12 +91,13 @@ def show_component(comp, w1, w3, comp_num):
     plt.show()
 
 
-def show_3_components(comp, w1, w3):
+def show_3_components(comp, w1, w3, comp_nums=[1,2,3]):
     """
     Show a plot of the first 3 component images.
     :param comp: numpy array, set of n_comp images, each X x Y
     :param w1: x-axis, X x 1 numpy array
     :param w3: y-axis, Y x 1 numpy array
+    :param comp_nums: list of 3 component numbers
     :return: displays a figure
     """
     fig, axarr = plt.subplots(1, 3, sharex=True, sharey=True)
@@ -109,8 +110,9 @@ def show_3_components(comp, w1, w3):
 
     for i in range(3):
         ax = axarr.flatten()[i]
-        plot_image(ax, comp[:, :, i], w1, w3, 'bwr')
-        ax.set_title("Component " + str(i+1))
+        comp_i = comp_nums[i] - 1
+        plot_image(ax, comp[:, :, comp_i], w1, w3, 'bwr')
+        ax.set_title("Component " + str(comp_i+1))
         plt.setp(ax.get_yticklabels(), visible=True)
         plt.setp(ax.get_xticklabels(), visible=True)
 
