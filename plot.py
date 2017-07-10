@@ -6,6 +6,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib
 matplotlib.rcParams.update({'font.size': 14})
 matplotlib.rcParams.update({'mathtext.default':'regular'})
+import fits
 
 # "Plot" functions return axes objects
 # "Show" functions display plots
@@ -77,8 +78,7 @@ def show_3_components(comp, w1, w3):
         plt.setp(ax.get_xticklabels(), visible=True)
 
 
-
-def plot_contribution(ax, tau2, proj, n_comp):
+def plot_contribution(ax, tau2, proj, n_comp=1):
     ax.plot([-1000, tau2[-1] + 1000], [0,0], c='black')  # zero line
     ax.scatter(tau2, proj[:, n_comp-1])
     ax.set_xlabel("Time (fs)", fontsize=14)
@@ -87,11 +87,33 @@ def plot_contribution(ax, tau2, proj, n_comp):
     return ax
 
 
+def plot_exp_fit(ax, popt, tau2):
+    """Plot single or double exponential fit function"""
+    if popt.shape[0] == 3:  # single exponential
+        ax.plot(tau2, fits.my_exponential(tau2, popt[0], popt[1], popt[2]))
+    elif popt.shape[0] == 5:
+        ax.plot(tau2, fits.my_double_exp(tau2, popt[0], popt[1], popt[2], popt[3], popt[4]))
+    return ax
+
+
+def show_exp_fit(tau2, proj, popt, T_SCALE):
+    """Show scatter plot and single-exp fit for component 1"""
+    fig, ax = plt.subplots(figsize=(FIG_SIZE, FIG_SIZE))
+    ax = plot_contribution(ax, tau2/T_SCALE, proj, 1)
+    ax = plot_exp_fit(ax, popt, tau2/T_SCALE)
+    ax.set_xlabel("Time (ps)")
+    ax.set_xlim(-1, tau2[-1]/T_SCALE + 1)
+    plt.show()
+
+
 def show_contribution(tau2, proj, n_comp):
     """Plot the contribution of the selected component vs time"""
     fig, ax = plt.subplots(figsize=(FIG_SIZE,FIG_SIZE))
     ax = plot_contribution(ax, tau2, proj, n_comp)
     plt.show()
+
+
+
 
 
 def time_to_index(tau2, target):
