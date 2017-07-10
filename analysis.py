@@ -7,14 +7,18 @@ from sklearn.decomposition import FactorAnalysis
 """Do PCA, ICA, or factor analysis and return components or coefficients."""
 
 
-def do_pca(data, normalize=False, n_comp=10):
+def do_analysis(data, normalize=False, n_comp=10, analysis_type='pca'):
     """
-    Do PCA on the input data and return a PCA object.
+    Do component analysis on the input data and return a fit object.
     :param data: numpy array, set of images to be analyzed
                  set of Z images, each X x Y
-    :param normalize: boolean, True to normalize data before doing PCA
+    :param normalize: boolean, True to normalize data before doing analysis
     :param n_comp: int, number of components to generate
-    :return: PCA object
+    :param analysis_type: string for the type of analysis to perform
+                          'pca' for Principal Component Analysis (default)
+                          'ica' for Independent Component Analysis
+                          'fa' for Factor Analysis
+    :return: PCA, ICA, or factor analysis object
     """
     data = np.nan_to_num(data)
     if normalize:
@@ -25,111 +29,57 @@ def do_pca(data, normalize=False, n_comp=10):
                 data[:, :, idx] = img
 
     data_r = reshape_image(data)
-    pca = PCA(n_components=n_comp)
-    pca.fit(data_r)
-    return pca
+
+    if analysis_type == 'pca':
+        fit_object = PCA(n_components=n_comp)
+    elif analysis_type == 'ica':
+        fit_object = FastICA(n_components=n_comp, whiten=True)
+    elif analysis_type == 'fa':
+        fit_object = FactorAnalysis(n_components=n_comp)
+    fit_object.fit(data_r)
+    return fit_object
 
 
-def get_pca_components(data, normalize=False, n_comp=10):
+def get_components(data, normalize=False, n_comp=10, analysis_type='pca'):
     """
-    Do PCA on the input data and return set of component images.
+    Do component analysis on the input data and return set of component images.
     :param data: numpy array, set of images to be analyzed
                  set of Z images, each X x Y
-    :param normalize: boolean, True to normalize data before doing PCA
+    :param normalize: boolean, True to normalize data before doing analysis
     :param n_comp: int, number of components to generate
+    :param analysis_type: string for the type of analysis to perform
+                          'pca' for Principal Component Analysis (default)
+                          'ica' for Independent Component Analysis
+                          'fa' for Factor Analysis
     :return: numpy array with dimensions (X, Y, n_comp)
              set of n_comp images, each X x Y
     """
     data = np.nan_to_num(data)
-    pca = do_pca(data, normalize, n_comp)
-    comp = np.zeros((data.shape[0], data.shape[1], pca.components_.shape[0]))
-    for i in range(pca.components_.shape[0]):
-        comp[:, :, i] = pca.components_[i].reshape(data.shape[0], data.shape[1])
+    fit_object = do_analysis(data, normalize, n_comp, analysis_type)
+    comp = np.zeros((data.shape[0], data.shape[1], fit_object.components_.shape[0]))
+    for i in range(fit_object.components_.shape[0]):
+        comp[:, :, i] = fit_object.components_[i].reshape(data.shape[0], data.shape[1])
     return comp
 
 
-def get_pca_projections(data, normalize=False, n_comp=10):
+def get_projections(data, normalize=False, n_comp=10, analysis_type='pca'):
     """
     Do PCA on the input data and return projection of original data onto components.
     :param data: numpy array, set of images to be analyzed
                  set of Z images, each X x Y
-    :param normalize: boolean, True to normalize data before doing PCA
+    :param normalize: boolean, True to normalize data before doing analysis
     :param n_comp: int, number of components to generate
+    :param analysis_type: string for the type of analysis to perform
+                          'pca' for Principal Component Analysis (default)
+                          'ica' for Independent Component Analysis
+                          'fa' for Factor Analysis
     :return: numpy array with dimensions (Z, n_comp)
              corresponding to the contribution of each component to each original image
     """
     data = np.nan_to_num(data)
-    pca = do_pca(data, normalize, n_comp)
+    fit_object = do_analysis(data, normalize, n_comp, analysis_type)
     data_r = reshape_image(data)
-    return pca.transform(data_r)
-
-
-def do_ica(data, normalize=False, n_comp=10):
-    """Returns ICA object"""
-    data = np.nan_to_num(data)
-    if normalize:
-        for idx in range(data.shape[2]):
-                img = data[:, :, idx]
-                peak = np.abs(img).max()
-                img = img / peak
-                data[:, :, idx] = img
-
-    data_r = reshape_image(data)
-    ica = FastICA(n_components=n_comp, whiten=True)
-    ica.fit(data_r)
-    return ica
-
-
-def get_ica_components(data, normalize=False, n_comp=10):
-    """Return reshaped ICA components"""
-    data = np.nan_to_num(data)
-    ica = do_ica(data, normalize, n_comp)
-    comp = np.zeros((data.shape[0], data.shape[1], ica.components_.shape[0]))
-    for i in range(ica.components_.shape[0]):
-        comp[:, :, i] = ica.components_[i].reshape(data.shape[0], data.shape[1])
-    return comp
-
-
-def get_ica_projections(data, normalize=False, n_comp=10):
-    """Return coefficients of projections onto new components"""
-    data = np.nan_to_num(data)
-    ica = do_ica(data, normalize, n_comp)
-    data_r = reshape_image(data)
-    return ica.transform(data_r)
-
-
-def do_facta(data, normalize=False, n_comp=10):
-    """Returns FactA object"""
-    data = np.nan_to_num(data)
-    if normalize:
-        for idx in range(data.shape[2]):
-                img = data[:, :, idx]
-                peak = np.abs(img).max()
-                img = img / peak
-                data[:, :, idx] = img
-
-    data_r = reshape_image(data)
-    facta = FactorAnalysis(n_components=n_comp)
-    facta.fit(data_r)
-    return facta
-
-
-def get_facta_components(data, normalize=False, n_comp=10):
-    """Return reshaped FactA components"""
-    data = np.nan_to_num(data)
-    facta = do_facta(data, normalize, n_comp)
-    comp = np.zeros((data.shape[0], data.shape[1], facta.components_.shape[0]))
-    for i in range(facta.components_.shape[0]):
-        comp[:, :, i] = facta.components_[i].reshape(data.shape[0], data.shape[1])
-    return comp
-
-
-def get_facta_projections(data, normalize=False, n_comp=10):
-    """Return coefficients of projections onto new components"""
-    data = np.nan_to_num(data)
-    facta = do_facta(data, normalize, n_comp)
-    data_r = reshape_image(data)
-    return facta.transform(data_r)
+    return fit_object.transform(data_r)
 
 
 def reshape_image(data):
