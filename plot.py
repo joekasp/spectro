@@ -14,7 +14,7 @@ def plotImage(ax, img, w1, w3):
     """Plot data image or component, return axes object"""
     w1grid, w3grid = np.meshgrid(w3, w1)
     ax.pcolormesh(w1grid, w3grid, img,
-                  vmin=-np.abs(img).max(), vmax=np.abs(img).max())
+                  vmin=-np.abs(img).max(), vmax=np.abs(img).max(),cmap=cm.bwr)
     ax.set_xlabel('$\omega_1/2\pi c\ (cm^{-1})$', fontsize=14)
     ax.set_ylabel('$\omega_3/2\pi c\ (cm^{-1})$', fontsize=14)
     ax.set_xlim(w1grid.min(), w1grid.max())
@@ -53,38 +53,12 @@ def show3Components(comp, w1, w3):
         plt.setp(ax.get_xticklabels(), visible=True)
 
 
-
 # to do: add zero line, change font sizes
 def plotContribution(tau2, proj, n_comp):
-    fig, ax = plt.subplots(figsize=(5,5))
+    fig, ax = plt.subplots()
     plt.scatter(tau2, proj[:, n_comp-1])
     ax.set_title("Component " + str(n_comp))
     ax.set_xlabel("Time (fs)")
     plt.show()
 
 
-
-#######################################################
-
-def surf3d(x,y,Z):
-    """
-    Performs 3d surface plot for x,y,Z data
-    """
-    X,Y = np.meshgrid(y,x)
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
-    TICK_LIMIT = 5
-    surf = ax.plot_surface(X,Y,Z,rstride=2,cstride=2,linewidth=0,cmap=cm.rainbow)
-    ax.view_init(elev=25., azim=-50)
-    fig.colorbar(surf,shrink=0.5, aspect=5)
-    ax.set_xlabel('$\omega_{1} (cm^{-1})$')
-    ax.set_ylabel('$\omega_{3} (cm^{-1})$')
-    ax.xaxis.labelpad=15
-    ax.yaxis.labelpad=15
-    xticks = ax.get_xticks()
-    nskip = round(len(xticks)/TICK_LIMIT)
-    ax.set_xticks(xticks[::nskip])
-    yticks = ax.get_yticks()
-    nskip = round(len(yticks)/TICK_LIMIT)
-    ax.set_yticks(yticks[::nskip])
-    return ax

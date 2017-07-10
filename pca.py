@@ -22,7 +22,7 @@ def doPCA(data, w1, w3, tau2, normalize=False, n_comp=10):
     pca.fit(data_r)
     return pca
 
-def getComponents(data, w1, w3, tau2, normalize=False, n_comp=10):
+def getPCAComponents(data, w1, w3, tau2, normalize=False, n_comp=10):
     """Return reshaped PCA components"""
     data = np.nan_to_num(data)
     pca = doPCA(data, w1, w3, tau2, normalize, n_comp)
@@ -31,7 +31,7 @@ def getComponents(data, w1, w3, tau2, normalize=False, n_comp=10):
         comp[:, :, i] = pca.components_[i].reshape(data.shape[0], data.shape[1])
     return comp
 
-def getProjections(data, w1, w3, tau2, normalize=False, n_comp=10):
+def getPCAProjections(data, w1, w3, tau2, normalize=False, n_comp=10):
     """Return coefficients of projections onto new components"""
     data = np.nan_to_num(data)
     pca = doPCA(data, w1, w3, tau2, normalize, n_comp)

@@ -20,8 +20,8 @@ def surf3d(x,y,Z,window_title='Figure',ax_title='',fig='None',azim=-50,elev=25):
     ax.set_zlim3d(-1.0,1.0)
     ax.view_init(elev=elev, azim=azim)
     fig.colorbar(surf,shrink=0.5, aspect=5)
-    ax.set_xlabel('$\omega_{1} (cm^{-1})$')
-    ax.set_ylabel('$\omega_{3} (cm^{-1})$')
+    ax.set_xlabel('$\omega_{1}/ 2\pi c (cm^{-1})$')
+    ax.set_ylabel('$\omega_{3}/ 2\pi c (cm^{-1})$')
     ax.xaxis.labelpad=15
     ax.yaxis.labelpad=15
     xticks = ax.get_xticks()
@@ -29,7 +29,7 @@ def surf3d(x,y,Z,window_title='Figure',ax_title='',fig='None',azim=-50,elev=25):
     ax.set_xticks(xticks[::nskip])
     yticks = ax.get_yticks()
     nskip = round(len(yticks)/TICK_LIMIT)
-    ax.set_yticks(yticks[::nskip])
+    ax.set_yticks(yticks[:-1:nskip])
     ax.set_title(ax_title)
 
     return ax
